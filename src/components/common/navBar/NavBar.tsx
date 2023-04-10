@@ -1,18 +1,38 @@
-import React from "react";
-import { Container, ContainerNavBar, Title } from "./styles";
-import { NavBarProps } from "./navBar.interface";
 import { navBarData } from "../../../constants/navBarData";
+import { useNavBar } from "../../../context/NavBarContext";
+import { NAVBAR_ACTION } from "../../../types/nav_bar";
+import { ContainerNavBar, Section, Title } from "./styles";
 
-const NavBar = ({ title }: NavBarProps) => {
+interface NavBarProps {
+  id: string;
+  title: string;
+  path: string;
+}
+
+const NavBar = () => {
+  const { dispatch, state } = useNavBar();
+
+  const handleOnClick = ({ id, title, path }: NavBarProps) => {
+    dispatch({
+      type: NAVBAR_ACTION.SET_NAVBAR,
+      payload: { navbar: { id, title, path } },
+    });
+    console.log("id", id);
+  };
+
+  console.log("state", state);
+
   return (
-    <Container>
-      <Title>{title}</Title>
-      <ContainerNavBar>
-        {navBarData.map((item) => (
-          <div key={`nav-bar-key-${item.id}`}>{item.title}</div>
-        ))}
-      </ContainerNavBar>
-    </Container>
+    <ContainerNavBar>
+      {navBarData.map((item) => (
+        <Section
+          key={`nav-bar-key-${item.id}`}
+          onClick={() => handleOnClick(item)}
+        >
+          <Title>{item.title}</Title>
+        </Section>
+      ))}
+    </ContainerNavBar>
   );
 };
 
